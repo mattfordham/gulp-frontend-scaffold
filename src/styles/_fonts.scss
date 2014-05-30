@@ -1,0 +1,25 @@
+/* /////////////////////////////////////////////////////
+
+FONT DEFINITIONS
+
+///////////////////////////////////////////////////// */
+
+.font-regular {
+  font-family: 'Quicksand-Regular';
+  font-weight: normal;
+}
+
+
+/* Webfont Includes
+--------------------------------------------- */
+
+@font-face {
+  font-family: 'Quicksand-Regular';
+  src: url('/assets/webfonts/Quicksand-Regular.eot');
+}
+
+@font-face {
+  font-family: 'Quicksand-Regular';
+  src: url('/assets/webfonts/Quicksand-Regular.woff') format('woff'),
+  url('/assets/webfonts/Quicksand-Regular.svg#Quicksand-Regular') format('svg');
+}

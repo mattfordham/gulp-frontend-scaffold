@@ -1,0 +1,60 @@
+/* /////////////////////////////////////////////////////
+
+BASE STYLES
+Only single elements. No classes or ids.
+
+///////////////////////////////////////////////////// */
+
+* { 
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box; 
+  box-sizing: border-box;
+  // *behavior: url(/scripts/boxsizing.htc); // <--- Use this for <= IE7 https://github.com/Schepp/box-sizing-polyfill
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-size: 16px;
+  line-height: 20px;
+  color: $base-color;
+  font-family: $body-font;
+}
+
+h1, h2, h3, h4, h5 {}
+
+h1 {}
+h2 {}
+h3 {}
+h4 {}
+h5 {}
+
+a {
+  &:hover {}
+  &:active {}
+}
+
+p, ol, ul {}
+
+p {}
+
+ol {}
+
+ul {}
+
+strong { font-weight: bold; }
+em { font-style: italic; }
+
+hr {}
+
+blockquote {}
+
+form {}
+label {}
+input {}
+input[type=text] {}
+textarea {}
+select{}

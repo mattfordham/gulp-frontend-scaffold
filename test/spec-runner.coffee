@@ -1,0 +1,1 @@
+require './spec/HomeView-spec.coffee'

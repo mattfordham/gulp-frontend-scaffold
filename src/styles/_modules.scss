@@ -1,0 +1,22 @@
+/* /////////////////////////////////////////////////////
+
+MODULES
+// Use class names for all modules
+// Use class names for all non-semantic children (divs, spans, etc). 
+// Child class names prefixed by module name (ex: news-item-title)
+// Keep nesting to a minimum
+// Put a comment description before each module
+
+///////////////////////////////////////////////////// */
+
+
+/* News Item
+--------------------------------------------- */
+
+.news-item {
+  .news-item__title {}
+  .news-item__description {}
+}
+
+.news-item--modifier {
+}

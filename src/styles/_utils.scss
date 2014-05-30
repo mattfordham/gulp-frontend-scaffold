@@ -1,0 +1,88 @@
+/* /////////////////////////////////////////////////////
+
+UTILS
+General CSS utilities and SASS mixins
+
+///////////////////////////////////////////////////// */
+
+@mixin image-replace($image) {
+  background: image-url($image) no-repeat;
+  width: image-width($image);
+  height: image-height($image);
+}
+
+.no-flicker{-webkit-transform:translate3d(0,0,0);}
+
+.hide-text {
+  border: 0;
+  font: 0/0 a;
+  text-shadow: none;
+  color: transparent;
+  background-color: transparent;
+}
+
+
+/* Responsive Mixins
+   see: http://jakearchibald.github.com/sass-ie
+------------------------------------------------ */
+
+$fix-mqs: false !default;
+
+@mixin respond-min($width : $break-small) {
+  @if $fix-mqs {
+    @if $fix-mqs >= $width {
+      @content;
+    }
+  } @else {
+    @media screen and (min-width: $width) {
+      @content;
+    }
+  }
+}
+
+$old-ie: false !default;
+
+@mixin old-ie {
+  @if $old-ie {
+    @content;
+  }
+}
+
+.no-mobile {
+  display: none;
+  
+  @include respond-min {
+    display: block;
+  }
+}
+
+.mobile-only {
+  display: block;
+  
+  @include respond-min {
+    display: none;
+  }
+}
+
+
+
+
+/* /////////////////////////////////////////////////////
+
+GOOD COMPASS MIXINS TO KNOW ABOUT
+
+image-width($image)
+image-height($image)
+image-url($image)
+
+replace-text($img, $x, $y)
+hide-text() 
+  @import "compass/typography/text/replacement";
+  
+inline-block
+  @import "compass/css3/inline-block";
+
+opacity($opacity)
+  @import "compass/css3/opacity"
+
+///////////////////////////////////////////////////// */
