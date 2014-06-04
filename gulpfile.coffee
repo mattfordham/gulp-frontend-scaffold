@@ -2,7 +2,7 @@
  * Development tasks
  *
  * @author  Christopher Pappas & Matthew Fordham
- * @date    5.30.14
+ * @date    6.4.14
  *
  * Primary Tasks:
  *    gulp dev   : Development mode, file-watcher
@@ -12,8 +12,9 @@
 
 gulp         = require 'gulp'
 autoprefixer = require 'gulp-autoprefixer'
-bower        = require 'gulp-bower'
+bowerFiles   = require 'gulp-bower-files'
 browserify   = require 'gulp-browserify'
+coffeeify    = require 'coffeeify'
 concat       = require 'gulp-concat'
 connect      = require 'gulp-connect'
 clean        = require 'gulp-clean'
@@ -21,7 +22,6 @@ imagemin     = require 'gulp-imagemin'
 livereload   = require 'gulp-livereload'
 mocha        = require 'gulp-mocha'
 notify       = require 'gulp-notify'
-stylus       = require 'gulp-stylus'
 rename       = require 'gulp-rename'
 stylus       = require 'gulp-stylus'
 uglify       = require 'gulp-uglify'
@@ -36,24 +36,40 @@ uglify       = require 'gulp-uglify'
 
 basePath = '.'
 src      = "#{basePath}/src"
-output   = "#{basePath}/public"
+output   = "#{basePath}/public/static"
 dist     = "#{basePath}/dist"
 test     = "#{basePath}/test"
-vendor   = "#{sources}/vendor"
+vendor   = "#{src}/vendor"
 port     = 3000
 
 
 
 
 #--------------------------------------------------------
-# Bower / Vendor Concatenation/Minification
+# Copy Bower libraries to vendor directory
 #--------------------------------------------------------
 
 
 gulp.task "bower", ->
    bowerFiles()
-      #.pipe concat("vendor.js")
-      .pipe gulp.dest("#{output}/assets/scripts")
+      .pipe gulp.dest "#{vendor}"
+
+
+
+
+#--------------------------------------------------------
+# Compile scripts using Browserify
+#--------------------------------------------------------
+
+
+gulp.task "browserify", ->
+   gulp.src "#{src}/scripts/app.coffee", read: false
+      .pipe browserify
+         transform:  ["coffeeify"]
+         extensions: [".coffee", ".js"]
+
+      .pipe rename "app.js"
+      .pipe gulp.dest "#{output}/assets/scripts"
 
 
 
@@ -63,84 +79,79 @@ gulp.task "bower", ->
 # --------------------------------------------------------
 
 
-
-
-#--------------------------------------------------------
-# Compile coffeescript files
-#--------------------------------------------------------
-
-
-gulp.task "coffee", ->
-   gulp.src "#{src}/js/*.coffee", read: false
-      .pipe browserify {transform: ["coffeeify"], extensions: [".coffee"]}
-      .pipe rename("app.js")
-      .pipe gulp.dest("#{output}/assets/scripts")
-
+gulp.task "clean", ->
+   gulp.src "#{output}/assets", read: false
+      .pipe clean()
 
 
 
 
 # --------------------------------------------------------
-# Concatinate Bower Vendor files copied from `grunt bower`
+# Concatinate vendor files
 # --------------------------------------------------------
 
 
-gulp.task 'concat'
+gulp.task "concat", ->
 
+   vendorFiles = [
+      "#{vendor}/lodash/dist/lodash.compat.js"
+      "#{vendor}/jquery/jquery.js"
+      "#{vendor}/backbone/backbone.js"
+      "#{vendor}/greensock/src/uncompressed/TweenMax.js"
+   ]
+
+   gulp.src vendorFiles
+      .pipe concat "vendor.js"
+      .pipe gulp.dest "#{output}/assets/scripts/"
 
 
 
 #--------------------------------------------------------
-# Stylesheets
+# Compile Stylus stylesheet files
 #--------------------------------------------------------
 
 
 gulp.task "stylus", ->
-   gulp.src "#{src}/css/*.styl"
+   gulp.src "#{src}/styles/app.styl"
       .pipe stylus()
       .pipe autoprefixer()
-      .pipe gulp.dest("#{output}/assets/styles")
-
+      .pipe gulp.dest "#{output}/assets/styles"
 
 
 
 
 #--------------------------------------------------------
-# Watch
+# Watch for changes and reload page
 #--------------------------------------------------------
 
 
 gulp.task "watch", ->
 
-  # CSS Compilation
-  gulp.watch "#{src}/css/*.styl", ["stylus"]
+  # CSS
+  gulp.watch "#{src}/styles/**/*.styl", ["stylus"]
 
-  # JavaScript Complilation
-  gulp.watch "#{src}/js/*.coffee", ["coffee"]
+  # JavaScript
+  gulp.watch "#{src}/scripts/**/*.coffee", ["browserify"]
 
-  # Vendor Concatenation/Minification with Bower
-  gulp.watch "#{src}/vendor/**", ["bower"]
+  # Vendor
+  #gulp.watch "#{src}/vendor/**", ["concat"]
 
   # LiveReload
   server = livereload()
-  gulp.watch(["#{dist}/**"]).on "change", (file) ->
+  gulp.watch(["#{output}/**"]).on "change", (file) ->
     server.changed file.path
 
 
 
+# + ----------------------------------------------------------
 
-#--------------------------------------------------------
-# Tasks
-#--------------------------------------------------------
+
 
 gulp.task "default", [
-   "stylus",
-   "coffee",
-   "bower",
+   "clean"
+   "bower"
+   "browserify"
+   "stylus"
    "watch"
 ]
-
-
-
-
 
