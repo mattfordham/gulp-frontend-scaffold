@@ -151,7 +151,6 @@ gulp.task "connect", ->
       host: null
       port: "#{port}"
       root: "#{output}"
-      #livereload: true
 
 
 
@@ -282,7 +281,7 @@ gulp.task "dev", [
    "stylus"
    "bower"
    "concat"
-   #"test"
+   "test"
    "connect"
    "watch"
 ]
