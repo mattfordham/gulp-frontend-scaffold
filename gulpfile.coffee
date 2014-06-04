@@ -105,8 +105,12 @@ gulp.task "browserify-test", ->
 # --------------------------------------------------------
 
 
-gulp.task "clean", ->
+gulp.task "clean-dev", ->
    gulp.src "#{output}/assets", read: false
+      .pipe clean()
+
+gulp.task "clean-dist", ->
+   gulp.src "#{dist}", read: false
       .pipe clean()
 
 
@@ -265,10 +269,10 @@ gulp.task "watch", ->
 
 # + ----------------------------------------------------------
 
+gulp.task "default", ["dev"]
 
-
-gulp.task "default", [
-   "clean"
+gulp.task "dev", [
+   "clean-dev"
    "copy-assets"
    "copy-html"
    "bower"
@@ -276,5 +280,22 @@ gulp.task "default", [
    "stylus"
    "bower"
    "concat"
-   #"watch"
+   "test"
+   "connect"
+   "watch"
+]
+
+gulp.task "build", [
+   "clean-dev"
+   "clean-dist"
+   "copy-assets"
+   "copy-html"
+   "bower"
+   "browserify-dev"
+   "stylus"
+   "bower"
+   "concat"
+   "test"
+   "minify"
+   "copy-dist"
 ]
