@@ -97,7 +97,7 @@ gulp.task "browserify-test", ->
          extensions: [".coffee", ".js"]
 
       .pipe rename "app.spec.js"
-      .pipe gulp.dest "#{test}/html/spec/"
+      .pipe gulp.dest "#{test}/html/scripts/"
 
 
 
@@ -228,8 +228,7 @@ gulp.task "test", ->
    gulp.start "browserify-dev", "browserify-test", "concat"
 
    gulp.src "#{test}/html/index.html"
-      .pipe mochaPhantom
-         reporter: 'Spec'
+      .pipe mochaPhantom()
 
 
 
