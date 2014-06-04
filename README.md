@@ -1,27 +1,25 @@
-Front-end Scaffold for Use with [Grunt](http://gruntjs.com/)
+Front-end Scaffold for Use with [Gulp](http://gulpjs.com/)
 ================================================================
 
 Includes [CoffeeScript](http://coffeescript.org/), [Browserify](https://github.com/substack/node-browserify) for CommonJS-style module wrapping, [Backbone](http://backbonejs.org/) for structure,
-[SASS](http://sass-lang.com) for CSS pre-processing, sourcemaps for CSS and CoffeeScript,
+[Stylus](http://learnboost.github.io/stylus/) for CSS pre-processing, sourcemaps for CSS and CoffeeScript,
 [Handlebars](http://handlebarsjs.com/) for templating, live-reload for automatic page-refreshes during development and Mocha + PhantomJS for unit testing.
 
 Project Setup
 -------------
 - Install Node
  - [Node.js Installer](http://nodejs.org/)
-- Install Grunt command line interface
- - `sudo npm install -g grunt-cli`
-- For sourcemap and Compass support, SASS and Compass gems need to be installed with the --pre flag
- - `gem install sass --pre && gem install compass --pre`
+- Install Gulp globally
+ - `sudo npm install -g gulp`
 - Clone and cd into the repo
- - `git clone https://github.com/WINTR/grunt-frontend-scaffold.git && cd grunt-frontend-scaffold`
-- Then install Grunt task dependencies
+ - `git clone https://github.com/WINTR/gulp-frontend-scaffold.git && cd gulp-frontend-scaffold`
+- Then install Gulp task dependencies
  - `npm install`
 
 Development Tasks
 -----------------
 
-- For development: `grunt dev` then navigate to `http://localhost:3001` (or IP address).
+- For development: `gulp dev` then navigate to `http://localhost:3000` (or IP address).
 - For deploy: `grunt build`
 
 This concatinates and minifies all CoffeeScripts and SASS and moves the project into 'dist' for production deploy.
@@ -34,7 +32,8 @@ Bower is used for client-side package management.  Packages installed via bower 
  - `bower search {package name}`
 - To install a package
  - `bower install {package name} --save`
- - `grunt bower`
+ - `gulp bower`
+ - Add the path to the new lib into the `concat` task in `gulpfile.coffee` and save
 
 
 Unit Testing
@@ -42,11 +41,11 @@ Unit Testing
 Mocha is used as the default for unit tests.  Via grunt-mocha, unit tests can be run in both the terminal as well as the browser.
 
 - To execute tests via PhantomJS
- - `grunt test`
+ - `gulp test`
 - To test in browser
- - Run `grunt test`
+ - Run `gulp test`
  - Navigate to `test/html/index.html`
-- When running `grunt dev`, tests are automatically re-run on save of either your source or your spec files and should trigger a reload in the browser.
+- When running `gulp dev`, tests are automatically re-run on save of either your source or your spec files and should trigger a reload in the browser.
 
 
 A Few Notes on Folder Structure
