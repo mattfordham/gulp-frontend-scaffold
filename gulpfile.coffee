@@ -94,11 +94,12 @@ gulp.task "clean", ->
 gulp.task "concat", ->
 
    vendorFiles = [
-      "#{vendor}/lodash/dist/lodash.compat.js"
-      "#{vendor}/jquery/jquery.js"
-      "#{vendor}/backbone/backbone.js"
-      "#{vendor}/greensock/src/uncompressed/TweenMax.js"
-   ]
+      "lodash/dist/lodash.compat.js"
+      "jquery/jquery.js"
+      "backbone/backbone.js"
+      "greensock/src/uncompressed/TweenMax.js"
+
+   ].map (file) -> "#{vendor}/" + file
 
    gulp.src vendorFiles
       .pipe concat "vendor.js"
