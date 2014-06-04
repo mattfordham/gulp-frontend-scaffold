@@ -18,6 +18,8 @@ coffeeify    = require 'coffeeify'
 concat       = require 'gulp-concat'
 connect      = require 'gulp-connect'
 clean        = require 'gulp-clean'
+embedlr      = require "gulp-embedlr"
+handleify    = require 'handleify'
 imagemin     = require 'gulp-imagemin'
 livereload   = require 'gulp-livereload'
 minifyCSS    = require 'gulp-minify-css'
@@ -80,7 +82,7 @@ gulp.task "bower", ->
 gulp.task "browserify-dev", ->
    gulp.src "#{sources}/scripts/app.coffee", read: false
       .pipe browserify
-         transform:  ["coffeeify"]
+         transform:  ["handleify", "coffeeify"]
          extensions: [".coffee", ".js"]
 
       .pipe rename "app.js"
@@ -91,7 +93,7 @@ gulp.task "browserify-dev", ->
 gulp.task "browserify-test", ->
    gulp.src "#{test}/spec-runner.coffee", read: false
       .pipe browserify
-         transform:  ["coffeeify"]
+         transform:  ["handleify", "coffeeify"]
          extensions: [".coffee", ".js"]
 
       .pipe rename "app.spec.js"
@@ -148,8 +150,8 @@ gulp.task "connect", ->
    connect.server
       host: null
       port: "#{port}"
-      root: "#{public}"
-      livereload: true
+      root: "#{output}"
+      #livereload: true
 
 
 
@@ -166,6 +168,7 @@ gulp.task "copy-assets", ->
 # Copy html
 gulp.task "copy-html", ->
    gulp.src "#{sources}/html/**/*.*"
+      .pipe embedlr()
       .pipe gulp.dest "#{output}"
 
 # Copy dist files
@@ -199,17 +202,17 @@ gulp.task "imagemin", ->
 gulp.task "minify", ->
 
    # Uglify sources
-   gulp.src "#{output}/assets/scripts/app.js", ->
+   gulp.src "#{output}/assets/scripts/app.js"
       .pipe uglify()
       .pipe gulp.dest "#{output}/assets/scripts/"
 
    # Uglify vendor
-   gulp.src "#{output}/assets/scripts/vendor.js", ->
+   gulp.src "#{output}/assets/scripts/vendor.js"
       .pipe uglify()
       .pipe gulp.dest "#{output}/assets/scripts/"
 
    # Minify CSS
-   gulp.src "#{output}/assets/styles/app.css", ->
+   gulp.src "#{output}/assets/styles/app.css"
       .pipe minifyCSS()
       .pipe gulp.dest "#{output}/assets/styles/app.css"
 
@@ -280,7 +283,7 @@ gulp.task "dev", [
    "stylus"
    "bower"
    "concat"
-   "test"
+   #"test"
    "connect"
    "watch"
 ]

@@ -1,0 +1,10 @@
+{
+  "name": "ee-bower",
+  "version": "1.0.0",
+  "dependencies": {
+    "lodash": "~2.4.1",
+    "jquery": "~1.10.2",
+    "backbone": "~1.1.0",
+    "greensock": "~1.11.2"
+  }
+}
