@@ -33,14 +33,26 @@ uglify       = require 'gulp-uglify'
 # Path Configurations
 # --------------------------------------------------------
 
-
+# Root application path
 basePath = '.'
-src      = "#{basePath}/src"
-output   = "#{basePath}/public/static"
-dist     = "#{basePath}/dist"
-test     = "#{basePath}/test"
-vendor   = "#{src}/vendor"
-port     = 3000
+
+# Directory where source files live
+sources = "#{basePath}/src"
+
+# Path to compile to during development
+output =  "#{basePath}/public/static"
+
+# Path to build final deploy files
+dist =    "#{basePath}/dist"
+
+# Test specs directory and html
+test =    "#{basePath}/test"
+
+# Directory where vendor files live
+vendor =  "#{sources}/vendor"
+
+# Browser port during development
+port = 3000
 
 
 
@@ -63,7 +75,7 @@ gulp.task "bower", ->
 
 
 gulp.task "browserify", ->
-   gulp.src "#{src}/scripts/app.coffee", read: false
+   gulp.src "#{sources}/scripts/app.coffee", read: false
       .pipe browserify
          transform:  ["coffeeify"]
          extensions: [".coffee", ".js"]
@@ -107,13 +119,41 @@ gulp.task "concat", ->
 
 
 
+
+# --------------------------------------------------------
+# Copy source files
+# --------------------------------------------------------
+
+
+# Copy development files
+gulp.task "copy", ->
+
+   # Copy assets
+   gulp.src "#{sources}/assets/**/*.*" #, base: './'
+      .pipe gulp.dest "#{output}/assets"
+
+   # Copy html
+   gulp.src "#{sources}/html/**/*.*" #, base: './'
+      .pipe gulp.dest "#{output}"
+
+
+# Copy dist files
+gulp.task "copy-dist", ->
+
+   # Copy dist
+   gulp.src "#{output}" #, base: './'
+      .pipe gulp.dest "#{dist}"
+
+
+
+
 #--------------------------------------------------------
 # Compile Stylus stylesheet files
 #--------------------------------------------------------
 
 
 gulp.task "stylus", ->
-   gulp.src "#{src}/styles/app.styl"
+   gulp.src "#{sources}/styles/app.styl"
       .pipe stylus()
       .pipe autoprefixer()
       .pipe gulp.dest "#{output}/assets/styles"
@@ -128,19 +168,19 @@ gulp.task "stylus", ->
 
 gulp.task "watch", ->
 
-  # CSS
-  gulp.watch "#{src}/styles/**/*.styl", ["stylus"]
+   # CSS
+   gulp.watch "#{sources}/styles/**/*.styl", ["stylus"]
 
-  # JavaScript
-  gulp.watch "#{src}/scripts/**/*.coffee", ["browserify"]
+   # JavaScript
+   gulp.watch "#{sources}/scripts/**/*.coffee", ["browserify"]
 
-  # Vendor
-  #gulp.watch "#{src}/vendor/**", ["concat"]
+   # Vendor
+   #gulp.watch "#{sources}/vendor/**", ["concat"]
 
-  # LiveReload
-  server = livereload()
-  gulp.watch(["#{output}/**"]).on "change", (file) ->
-    server.changed file.path
+   # LiveReload
+   server = livereload()
+   gulp.watch(["#{output}/**"]).on "change", (file) ->
+      server.changed file.path
 
 
 
@@ -150,9 +190,11 @@ gulp.task "watch", ->
 
 gulp.task "default", [
    "clean"
+   "copy"
    "bower"
    "browserify"
    "stylus"
+   "bower"
+   "concat"
    "watch"
 ]
-
