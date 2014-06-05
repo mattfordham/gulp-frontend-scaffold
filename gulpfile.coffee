@@ -84,6 +84,7 @@ gulp.task "browserify-dev", ->
       .pipe browserify
          transform:  ["handleify", "coffeeify"]
          extensions: [".coffee", ".js"]
+         debug: true
 
       .pipe rename "app.js"
       .pipe gulp.dest "#{output}/assets/scripts"
@@ -172,7 +173,7 @@ gulp.task "copy-html", ->
 
 # Copy dist files
 gulp.task "copy-dist", ->
-   gulp.src "#{output}"
+   gulp.src "#{output}/**/*.*"
       .pipe gulp.dest "#{dist}"
 
 
@@ -199,6 +200,8 @@ gulp.task "imagemin", ->
 
 
 gulp.task "minify", ->
+
+   gulp.start "imagemin"
 
    # Uglify sources
    gulp.src "#{output}/assets/scripts/app.js"
