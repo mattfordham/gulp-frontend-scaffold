@@ -26,7 +26,9 @@ minifyCSS    = require 'gulp-minify-css'
 mocha        = require 'gulp-mocha'
 mochaPhantom = require 'gulp-mocha-phantomjs'
 notify       = require 'gulp-notify'
+plumber      = require 'gulp-plumber'
 rename       = require 'gulp-rename'
+runSequence  = require 'run-sequence'
 stylus       = require 'gulp-stylus'
 uglify       = require 'gulp-uglify'
 
@@ -81,6 +83,7 @@ gulp.task "bower", ->
 
 gulp.task "browserify-dev", ->
    gulp.src "#{sources}/scripts/app.coffee", read: false
+      .pipe plumber()
       .pipe browserify
          transform:  ["handleify", "coffeeify"]
          extensions: [".coffee", ".js"]
@@ -93,6 +96,7 @@ gulp.task "browserify-dev", ->
 
 gulp.task "browserify-test", ->
    gulp.src "#{test}/spec-runner.coffee", read: false
+      .pipe plumber()
       .pipe browserify
          transform:  ["handleify", "coffeeify"]
          extensions: [".coffee", ".js"]
@@ -230,6 +234,7 @@ gulp.task "test", ->
    gulp.start "browserify-dev", "browserify-test", "concat"
 
    gulp.src "#{test}/html/index.html"
+      .pipe plumber()
       .pipe mochaPhantom()
 
 
@@ -242,6 +247,7 @@ gulp.task "test", ->
 
 gulp.task "stylus", ->
    gulp.src "#{sources}/styles/main.styl"
+      .pipe plumber()
       .pipe stylus()
       .pipe autoprefixer()
       .pipe gulp.dest "#{output}/assets/styles"
@@ -273,33 +279,25 @@ gulp.task "watch", ->
 
 # + ----------------------------------------------------------
 
+
+gulp.task "dev", ->
+   runSequence "clean-dev", "bower", [
+      "copy-assets"
+      "copy-html"
+      "browserify-dev"
+      "stylus"
+      "concat"
+   ], "test", "connect", "watch"
+
+
+gulp.task "build", ->
+   runSequence "clean-dev", "clean-dist", "bower", [
+      "copy-assets"
+      "copy-html"
+      "browserify-dev"
+      "stylus"
+      "concat"
+   ], "test", "minify", "copy-dist"
+
+
 gulp.task "default", ["dev"]
-
-gulp.task "dev", [
-   "clean-dev"
-   "copy-assets"
-   "copy-html"
-   "bower"
-   "browserify-dev"
-   "stylus"
-   "bower"
-   "concat"
-   "test"
-   "connect"
-   "watch"
-]
-
-gulp.task "build", [
-   "clean-dev"
-   "clean-dist"
-   "copy-assets"
-   "copy-html"
-   "bower"
-   "browserify-dev"
-   "stylus"
-   "bower"
-   "concat"
-   "test"
-   "minify"
-   "copy-dist"
-]

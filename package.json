@@ -23,6 +23,8 @@
     "handleify": "^0.1.2",
     "gulp-embedlr": "^0.5.2",
     "mocha": "^1.20.1",
-    "chai": "^1.9.1"
+    "chai": "^1.9.1",
+    "gulp-plumber": "^0.6.2",
+    "run-sequence": "^0.3.6"
   }
 }
