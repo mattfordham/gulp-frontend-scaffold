@@ -31,6 +31,7 @@ rename       = require 'gulp-rename'
 runSequence  = require 'run-sequence'
 stylus       = require 'gulp-stylus'
 uglify       = require 'gulp-uglify'
+util         = require 'gulp-util'
 
 
 
@@ -64,7 +65,9 @@ port = 3000
 
 # Direct errors to notification center
 handleError = ->
-   plumber errorHandler: notify.onError "Error: <%= error.message %>"
+   plumber errorHandler: notify.onError ->
+      util.beep()
+      "Error: <%= error.message %>"
 
 
 
