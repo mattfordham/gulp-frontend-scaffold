@@ -1,1 +1,1 @@
-require './spec/HomeView-spec.coffee'
+require './spec/main.coffee'

@@ -1,310 +1,294 @@
-###*
- * Development tasks
- *
- * @author  Christopher Pappas & Matthew Fordham
- * @date    6.4.14
- *
- * Primary Tasks:
- *    gulp dev   : Development mode, file-watcher
- *    gulp build : Minify all sources and deploy for distribution
- *
-###
+#########################################################
+# WINTR Gulp Config
+# Author: matt@wintr.us @ WINTR
+#########################################################
 
-gulp         = require 'gulp'
-autoprefixer = require 'gulp-autoprefixer'
-bowerFiles   = require 'gulp-bower-files'
-browserify   = require 'gulp-browserify'
-coffeeify    = require 'coffeeify'
-concat       = require 'gulp-concat'
-connect      = require 'gulp-connect'
-clean        = require 'gulp-clean'
-embedlr      = require "gulp-embedlr"
-handleify    = require 'handleify'
-imagemin     = require 'gulp-imagemin'
-livereload   = require 'gulp-livereload'
-minifyCSS    = require 'gulp-minify-css'
-mocha        = require 'gulp-mocha'
-mochaPhantom = require 'gulp-mocha-phantomjs'
-notify       = require 'gulp-notify'
-plumber      = require 'gulp-plumber'
-rename       = require 'gulp-rename'
-runSequence  = require 'run-sequence'
-stylus       = require 'gulp-stylus'
-uglify       = require 'gulp-uglify'
-util         = require 'gulp-util'
+#--------------------------------------------------------
+# Requirements
+#--------------------------------------------------------
+
+gulp        = require 'gulp'
+coffeeify   = require 'coffeeify'
+handleify   = require 'handleify'
+runSequence = require 'run-sequence'
+eventStream = require 'event-stream'
+plugins     = require('gulp-load-plugins')()
 
 
-
-
-# --------------------------------------------------------
-# Path Configurations
-# --------------------------------------------------------
-
+#--------------------------------------------------------
+# Variables
+#--------------------------------------------------------
 
 # Root application path
 basePath = '.'
 
-# Directory where source files live
-sources = "#{basePath}/src"
+# Source path
+sourcePath = "#{basePath}/source"
 
-# Path to compile to during development
-output =  "#{basePath}/public"
+# Compile path
+outputPath = "#{basePath}/public/assets"
 
-# Path to build final deploy files
-dist =    "#{basePath}/dist"
+# Public directory
+publicPath = "#{basePath}/public"
 
-# Test specs directory and html
-test =    "#{basePath}/test"
+# Test path
+testPath = "#{basePath}/test"
 
 # Directory where vendor files live
-vendor =  "#{sources}/vendor"
+vendorPath = "#{sourcePath}/vendor"
 
-# Browser port during development
-port = 3000
+# Name of JavaScript directory
+jsDirectory = "js"
+
+# Name of CSS directory
+cssDirectory = "css"
+
+# Name of Images directory
+imagesDirectory = "images"
+
+# Name of SVG directory
+svgDirectory = "svg"
+
+# Name of Fonts directory
+fontsDirectory = "fonts"
+
+# Name of main JS file
+jsMainFile = "main"
+
+# Name of main CSS file
+cssMainFile = "main"
 
 
-# Direct errors to notification center
-handleError = ->
-   plumber errorHandler: notify.onError ->
-      util.beep()
-      "Error: <%= error.message %>"
+# --------------------------------------------------------
+# Run server
+# --------------------------------------------------------
 
+gulp.task "server", ->
+   plugins.connect.server
+      host: null
+      port: 3000
+      root: publicPath
 
 
 #--------------------------------------------------------
-# Copy Bower libraries to vendor directory
+# Compile Stylesheets
 #--------------------------------------------------------
 
+gulp.task "stylesheets", ->
+  
+  gulp.src ["#{sourcePath}/#{cssDirectory}/#{cssMainFile}.styl"]
+    .pipe plugins.plumber()
+    .pipe plugins.stylus()
+    .pipe plugins.autoprefixer()
+    .pipe gulp.dest "#{outputPath}/#{cssDirectory}"
+
+  gulp.src ["#{sourcePath}/#{cssDirectory}/ie.styl"]
+    .pipe plugins.plumber()
+    .pipe plugins.stylus()
+    .pipe plugins.autoprefixer()
+    .pipe gulp.dest "#{outputPath}/#{cssDirectory}"
+
+
+#--------------------------------------------------------
+# Compile JavaScripts 
+#--------------------------------------------------------
+
+gulp.task "javascripts", ->
+  gulp.src "#{sourcePath}/#{jsDirectory}/#{jsMainFile}.coffee", read: false
+    .pipe plugins.plumber()
+    .pipe plugins.browserify
+      transform:  ["handleify", "coffeeify"]
+      extensions: [".coffee", ".js"]
+      debug: true
+    .pipe plugins.rename "#{jsMainFile}.js"
+    .pipe gulp.dest "#{outputPath}/#{jsDirectory}"
+
+
+#--------------------------------------------------------
+# Concatenate Bower libraries
+#--------------------------------------------------------
 
 gulp.task "bower", ->
-   bowerFiles()
-      .pipe gulp.dest "#{vendor}"
+  plugins.bowerFiles()
+    .pipe plugins.concat("vendor.js")
+    .pipe gulp.dest "#{outputPath}/#{jsDirectory}"
 
 
+# --------------------------------------------------------
+# Clean output directories
+# --------------------------------------------------------
+
+gulp.task "clean", ->
+  
+  directoriesToClean = [
+    "#{outputPath}/#{jsDirectory}"
+    "#{outputPath}/#{cssDirectory}"
+    "#{outputPath}/#{imagesDirectory}"
+  ]
+
+  gulp.src directoriesToClean, read: false
+    .pipe plugins.clean()
 
 
 #--------------------------------------------------------
-# Compile scripts using Browserify
+# Copy images
 #--------------------------------------------------------
 
-
-gulp.task "browserify-dev", ->
-   gulp.src "#{sources}/scripts/app.coffee", read: false
-      .pipe handleError()
-      .pipe browserify
-         transform:  ["handleify", "coffeeify"]
-         extensions: [".coffee", ".js"]
-         debug: true
-
-      .pipe rename "app.js"
-      .pipe gulp.dest "#{output}/assets/scripts"
-
-
-
-gulp.task "browserify-test", ->
-   gulp.src "#{test}/spec-runner.coffee", read: false
-      .pipe handleError()
-      .pipe browserify
-         transform:  ["handleify", "coffeeify"]
-         extensions: [".coffee", ".js"]
-
-      .pipe rename "app.spec.js"
-      .pipe gulp.dest "#{test}/html/scripts/"
-
-
-
-
-# --------------------------------------------------------
-# Clean working development directory
-# --------------------------------------------------------
-
-
-gulp.task "clean-dev", ->
-   gulp.src "#{output}/assets", read: false
-      .pipe clean()
-
-gulp.task "clean-dist", ->
-   gulp.src "#{dist}", read: false
-      .pipe clean()
-
-
-
-
-
-# --------------------------------------------------------
-# Concatinate vendor files
-# --------------------------------------------------------
-
-
-gulp.task "concat", ->
-   vendorFiles = [
-      "lodash/dist/lodash.compat.js"
-      "jquery/jquery.js"
-      "backbone/backbone.js"
-      "greensock/src/uncompressed/TweenMax.js"
-
-   ].map (file) -> "#{vendor}/" + file
-
-   gulp.src vendorFiles
-      .pipe concat "vendor.js"
-      .pipe gulp.dest "#{output}/assets/scripts/"
-
-
-
-
-
-# --------------------------------------------------------
-# Connect to server
-# --------------------------------------------------------
-
-
-gulp.task "connect", ->
-   connect.server
-      host: null
-      port: "#{port}"
-      root: "#{output}"
-
-
-
-
-# --------------------------------------------------------
-# Copy source files
-# --------------------------------------------------------
-
-# Copy assets
-gulp.task "copy-assets", ->
-   gulp.src "#{sources}/assets/**/*.*"
-      .pipe gulp.dest "#{output}/assets"
-
-# Copy html
-gulp.task "copy-html", ->
-   gulp.src "#{sources}/html/**/*.*"
-      .pipe embedlr()
-      .pipe gulp.dest "#{output}"
-
-# Copy dist files
-gulp.task "copy-dist", ->
-   gulp.src "#{output}/**/*.*"
-      .pipe gulp.dest "#{dist}"
-
-
+gulp.task "copy-images", ->
+  gulp.src "#{sourcePath}/#{imagesDirectory}/**/*"
+    .pipe gulp.dest "#{outputPath}/#{imagesDirectory}"
 
 
 #--------------------------------------------------------
-# Optimize images using ImageMin
+# Minify 
 #--------------------------------------------------------
-
-
-gulp.task "imagemin", ->
-   gulp.src "#{output}/assets/images/*"
-      .pipe imagemin
-         optimizationLevel: 5
-
-      .pipe gulp.dest "#{output}/assets/images"
-
-
-
-
-#--------------------------------------------------------
-# Minify sources and vendor
-#--------------------------------------------------------
-
 
 gulp.task "minify", ->
 
-   gulp.start "imagemin"
+  # Compress images
+  gulp.src "#{outputPath}/#{imagesDirectory}/*"
+    .pipe plugins.imagemin
+      optimizationLevel: 5
+    .pipe gulp.dest "#{outputPath}/#{imagesDirectory}"
 
-   # Uglify sources
-   gulp.src "#{output}/assets/scripts/app.js"
-      .pipe uglify()
-      .pipe gulp.dest "#{output}/assets/scripts/"
+  # Compress Main JavaScript
+  gulp.src "#{outputPath}/#{jsDirectory}/#{jsMainFile}.js"
+    .pipe plugins.uglify()
+    .pipe gulp.dest "#{outputPath}/#{jsDirectory}/"
 
-   # Uglify vendor
-   gulp.src "#{output}/assets/scripts/vendor.js"
-      .pipe uglify()
-      .pipe gulp.dest "#{output}/assets/scripts/"
+  # Compress Vendor JavaScript
+  gulp.src "#{outputPath}/#{jsDirectory}/vendor.js"
+    .pipe plugins.uglify()
+    .pipe gulp.dest "#{outputPath}/#{jsDirectory}/"
 
-   # Minify CSS
-   gulp.src "#{output}/assets/styles/app.css"
-      .pipe minifyCSS()
-      .pipe gulp.dest "#{output}/assets/styles/app.css"
-
-
-
-
-#--------------------------------------------------------
-# Mocha tests via PhantomJS or the browser
-#--------------------------------------------------------
-
-
-gulp.task "test", ->
-   gulp.start "browserify-dev", "browserify-test", "concat"
-
-   gulp.src "#{test}/html/index.html"
-      .pipe handleError()
-      .pipe mochaPhantom()
-
-
+  # Minify CSS
+  gulp.src "#{outputPath}/#{cssDirectory}/*.css"
+    .pipe plugins.minifyCss()
+    .pipe gulp.dest "#{outputPath}/#{cssDirectory}"
 
 
 #--------------------------------------------------------
-# Compile Stylus stylesheet files
+# Watch for changes and reload
 #--------------------------------------------------------
-
-
-gulp.task "stylus", ->
-   gulp.src "#{sources}/styles/main.styl"
-      .pipe handleError()
-      .pipe stylus()
-      .pipe autoprefixer()
-      .pipe gulp.dest "#{output}/assets/styles"
-
-
-
-
-#--------------------------------------------------------
-# Watch for changes and reload page
-#--------------------------------------------------------
-
 
 gulp.task "watch", ->
-   server = livereload()
 
-   gulp.watch "#{sources}/assets/**/*.*",             [ "copy-assets" ]
-   gulp.watch "#{sources}/html/**/*.*",               [ "copy-html" ]
-   gulp.watch "#{sources}/scripts/**/*.{coffee,js}",  [ "browserify-dev" ]
-   gulp.watch "#{sources}/styles/**/*.{styl,css}",    [ "stylus" ]
-   gulp.watch "#{test}/**",                           [ "test" ]
-   gulp.watch "#{sources}/vendor/**/*.*",             [ "concat" ]
+  plugins.watch glob: "#{sourcePath}/#{cssDirectory}/**/*.{styl,sass,scss,css}", ->
+    gulp.start "stylesheets"
 
-   # LiveReload
-   gulp.watch(["#{output}/**"]).on "change", (file) ->
-      server.changed file.path
+  plugins.watch glob: "#{sourcePath}/#{imagesDirectory}/**/*", ->
+    gulp.start "copy-images"
 
+  plugins.watch glob: "#{sourcePath}/#{jsDirectory}/**/*.{coffee,js}", ->
+    gulp.start "javascripts"
 
+  plugins.watch glob: "#{sourcePath}/#{vendorPath}/**/*", ->
+    gulp.start "bower"
 
-
-# + ----------------------------------------------------------
-
-
-gulp.task "dev", ->
-   runSequence "clean-dev", "bower", [
-      "copy-assets"
-      "copy-html"
-      "browserify-dev"
-      "stylus"
-      "concat"
-   ], "test", "connect", "watch"
+  # LiveReload
+  server = plugins.livereload()
+  gulp.watch(["#{publicPath}/**/*"]).on "change", (file) ->
+    server.changed file.path
 
 
-gulp.task "build", ->
-   runSequence "clean-dev", "clean-dist", "bower", [
-      "copy-assets"
-      "copy-html"
-      "browserify-dev"
-      "stylus"
-      "concat"
-   ], "test", "minify", "copy-dist"
+#--------------------------------------------------------
+# Lint
+#--------------------------------------------------------
+    
+gulp.task "lint", ->
+  
+  gulp.src "#{sourcePath}/#{jsDirectory}/**/*.coffee"
+    .pipe plugins.coffeelint()
+    .pipe plugins.coffeelint.reporter()
+  
+  gulp.src "#{outputPath}/#{cssDirectory}/#{cssMainFile}.css"
+    .pipe plugins.csslint()
+    .pipe plugins.csslint.reporter()
+  
+  gulp.src("#{publicPath}/**/*.html")
+    .pipe(plugins.htmlhint("id-class-value": "dash"))
+    .pipe plugins.htmlhint.reporter()
 
+
+#--------------------------------------------------------
+# Icon Font
+#--------------------------------------------------------
+    
+gulp.task "icon-font", ->
+  
+  cssTemplateFilename = "icon-font-template.css"
+  cssOutputFilename = "_icons.styl"
+  fontName = "icons"
+  fontPath = "../fonts/"
+  className = "icon"
+
+  # Grab SVGs from Sketch. 
+  # Requires Sketch Tools http://sketchtool.bohemiancoding.com/sketchtool-latest.zip
+  sketchSvgStream = gulp.src "#{sourcePath}/#{svgDirectory}/*.sketch"
+    .pipe plugins.sketch
+      export: 'artboards'
+      formats: 'svg'
+
+  # Grab SVGs from 'svg' directory
+  fileSvgStream = gulp.src "#{sourcePath}/#{svgDirectory}/*.svg"
+
+  # Merge svg streams together
+  allSvgStream = eventStream.merge sketchSvgStream, fileSvgStream
+
+  # Generate Font and CSS from all SVGs
+  allSvgStream
+    .pipe(plugins.iconfont
+      fontName: "icons"
+      normalize: true
+    ).on("codepoints", (codepoints, options) ->
+      gulp.src "#{sourcePath}/#{svgDirectory}/#{cssTemplateFilename}"
+        .pipe(plugins.consolidate "lodash",
+          glyphs: codepoints
+          fontName: fontName
+          fontPath: fontPath
+          className: className
+        ).pipe plugins.rename cssOutputFilename
+        .pipe gulp.dest "#{sourcePath}/#{cssDirectory}"
+    ).pipe gulp.dest "#{outputPath}/#{fontsDirectory}"
+
+
+#--------------------------------------------------------
+# Tests
+#--------------------------------------------------------
+
+gulp.task "test", ->
+  gulp.start "javascripts"
+  
+  gulp.src "#{testPath}/spec-runner.coffee", read: false
+    .pipe plugins.plumber()
+    .pipe plugins.browserify
+      transform:  ["handleify", "coffeeify"]
+      extensions: [".coffee", ".js"]
+      debug: true
+    .pipe plugins.rename "spec.js"
+    .pipe gulp.dest "#{testPath}/html"
+
+  gulp.src "#{testPath}/html/index.html"
+    .pipe plugins.mochaPhantomjs()
+
+  
+    
+#---------------------------------------------------------
 
 gulp.task "default", ["dev"]
+
+gulp.task "dev", ->
+  runSequence "clean", [
+    "copy-images"
+    "bower"
+    "javascripts"
+    "stylesheets"
+  ], "server", "watch"
+
+gulp.task "build", ->
+  runSequence "clean", [
+    "copy-images"
+    "bower"
+    "javascripts"
+    "stylesheets"
+  ], "minify"

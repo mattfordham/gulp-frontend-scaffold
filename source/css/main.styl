@@ -1,0 +1,47 @@
+/* /////////////////////////////////////////////////////
+
+WINTR Stylus Boilerplate
+Author: matt@wintr.us
+
+///////////////////////////////////////////////////// */
+
+
+/* Variables
+--------------------------------------------- */
+
+// Colors
+base-color = red
+
+// Fonts
+body-font = Helvetica, Arial, sans-serif
+
+body-font-size = 14px
+base-line-height = 1.3
+
+// Margin & Padding
+global-margin = 20px
+global-padding = 20px
+
+// Responsive switches (overridden in ie.styl)
+fix-mqs ?= false
+old-ie ?= false
+
+// Breakpoints
+tablet = 400px
+desktop = 800px
+wide-desktop = 1200px
+
+
+
+/* Imports
+--------------------------------------------- */
+
+@import 'jeet'
+@import '_reset'
+@import "_fonts"
+@import "_base"
+@import "_utils"
+@import "_grid"
+@import "_layout"
+@import "modules/*"
+@import "pages/*"
