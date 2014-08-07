@@ -23,7 +23,3 @@ Thumbs.db
 # NPM packages folder and bower.
 node_modules/
 bower_components/
-
-# Project folders
-dist/
-
