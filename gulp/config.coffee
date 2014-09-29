@@ -2,43 +2,43 @@
 # Config Variables
 #--------------------------------------------------------
 
-module.exports = 
-
-  # Root application path
-  basePath: '.'
+Config = -> 
 
   # Source path
-  sourcePath: "#{@basePath}/source"
+  @sourcePath = "source"
 
   # Compile path
-  outputPath: "#{@basePath}/public/assets"
+  @outputPath = "public/assets"
 
   # Public directory
-  publicPath: "#{@basePath}/public"
+  @publicPath = "public"
 
   # Test path
-  testPath: "#{@basePath}/test"
+  @testPath = "test"
 
   # Directory where vendor files live
-  vendorPath: "#{@sourcePath}/vendor"
+  @vendorPath = "#{@sourcePath}/vendor"
 
   # Name of JavaScript directory
-  jsDirectory: "js"
+  @jsDirectory = "js"
 
   # Name of CSS directory
-  cssDirectory: "css"
+  @cssDirectory = "css"
 
   # Name of Images directory
-  imagesDirectory: "images"
+  @imagesDirectory = "images"
 
   # Name of SVG directory
-  svgDirectory: "svg"
+  @svgDirectory = "svg"
 
   # Name of Fonts directory
-  fontsDirectory: "fonts"
+  @fontsDirectory = "fonts"
 
   # Name of main JS file
-  jsMainFile: "main"
+  @jsMainFile = "main"
 
   # Name of main CSS file
-  cssMainFile: "main"
+  @cssMainFile = "main"
+
+
+module.exports = new Config()
