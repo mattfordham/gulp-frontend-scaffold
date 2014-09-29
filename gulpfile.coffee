@@ -7,12 +7,13 @@
 # Requirements
 #--------------------------------------------------------
 
-gulp        = require 'gulp'
-coffeeify   = require 'coffeeify'
-handleify   = require 'handleify'
-runSequence = require 'run-sequence'
-eventStream = require 'event-stream'
-plugins     = require('gulp-load-plugins')()
+gulp           = require 'gulp'
+coffeeify      = require 'coffeeify'
+handleify      = require 'handleify'
+runSequence    = require 'run-sequence'
+mainBowerFiles = require 'main-bower-files'
+eventStream    = require 'event-stream'
+plugins        = require('gulp-load-plugins')()
 
 
 #--------------------------------------------------------
@@ -64,10 +65,11 @@ cssMainFile = "main"
 # --------------------------------------------------------
 
 gulp.task "server", ->
-   plugins.connect.server
-      host: null
+   gulp.src "public"
+    .pipe plugins.webserver
       port: 3000
-      root: publicPath
+      directoryListing: true
+      livereload: true 
 
 
 #--------------------------------------------------------
@@ -109,7 +111,7 @@ gulp.task "javascripts", ->
 #--------------------------------------------------------
 
 gulp.task "bower", ->
-  plugins.bowerFiles()
+  gulp.src mainBowerFiles()
     .pipe plugins.concat("vendor.js")
     .pipe gulp.dest "#{outputPath}/#{jsDirectory}"
 
@@ -174,23 +176,28 @@ gulp.task "minify", ->
 
 gulp.task "watch", ->
 
-  plugins.watch glob: "#{sourcePath}/#{cssDirectory}/**/*.{styl,sass,scss,css}", ->
+  plugins.watch "#{sourcePath}/#{cssDirectory}/**/*.{styl,sass,scss,css}", (files) ->
     gulp.start "stylesheets"
 
-  plugins.watch glob: "#{sourcePath}/#{imagesDirectory}/**/*", ->
+  plugins.watch "#{sourcePath}/#{imagesDirectory}/**/*", ->
     gulp.start "copy-images"
 
-  plugins.watch glob: "#{sourcePath}/#{jsDirectory}/**/*.{coffee,js}", ->
+  plugins.watch "#{sourcePath}/#{jsDirectory}/**/*.{coffee,js}", ->
     gulp.start "javascripts"
 
-  plugins.watch glob: "#{sourcePath}/#{vendorPath}/**/*", ->
+  plugins.watch "#{sourcePath}/#{vendorPath}/**/*", ->
     gulp.start "bower"
 
-  # LiveReload
   server = plugins.livereload()
-  gulp.watch(["#{publicPath}/**/*"]).on "change", (file) ->
-    server.changed file.path
+  plugins.livereload.listen()
 
+  plugins.watch "#{publicPath}/**/*.{css,js,svg,jpg,gif,png}"
+    .pipe plugins.livereload()
+
+  plugins.watch "#{publicPath}/**/*.html", ->
+    server.changed()
+
+  return
 
 #--------------------------------------------------------
 # Lint
