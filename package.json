@@ -38,6 +38,7 @@
     "lodash": "^2.4.1",
     "main-bower-files": "^2.0.0",
     "mocha": "^1.21.0",
+    "require-dir": "^0.1.0",
     "run-sequence": "~0.3.6",
     "rupture": "^0.1.0"
   }
