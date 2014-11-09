@@ -19,7 +19,7 @@ requireDir './gulp/tasks', { recurse: true }
 gulp.task "default", ["dev"]
 
 gulp.task "dev", ->
-  runSequence "clean", [
+  runSequence "set-development", "clean", [
     "copy-images"
     "bower"
     "javascripts"

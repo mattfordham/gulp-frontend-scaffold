@@ -4,6 +4,9 @@
 
 Config = -> 
 
+  # Development mode
+  @development = false
+
   # Source path
   @sourcePath = "source"
 

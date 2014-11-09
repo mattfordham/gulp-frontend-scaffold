@@ -19,6 +19,6 @@ gulp.task "javascripts", ->
     .pipe plugins.browserify
       transform:  ["handleify", "coffeeify"]
       extensions: [".coffee", ".js"]
-      debug: true
+      debug: config.development
     .pipe plugins.rename "#{config.jsMainFile}.js"
     .pipe gulp.dest "#{config.outputPath}/#{config.jsDirectory}"
