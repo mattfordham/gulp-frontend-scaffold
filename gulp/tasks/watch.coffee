@@ -22,7 +22,7 @@ gulp.task "watch", ->
   plugins.watch "#{config.sourcePath}/#{config.jsDirectory}/**/*.{coffee,js}", (e, cb) ->
     gulp.start "javascripts", cb
 
-  plugins.watch "#{config.sourcePath}/#{config.vendorPath}/**/*", (e, cb) ->
+  plugins.watch "bower.json", (e, cb) ->
     gulp.start "bower", cb
 
   server = plugins.livereload()
