@@ -5,6 +5,7 @@
 gulp      = require 'gulp'
 plugins   = require('gulp-load-plugins')()
 config    = require "../config.coffee"
+merge     = require 'merge-stream'
 
 
 #--------------------------------------------------------
@@ -13,24 +14,19 @@ config    = require "../config.coffee"
 
 gulp.task "minify", ->
 
-  # Compress images
-  gulp.src "#{config.outputPath}/#{config.imagesDirectory}/*"
-    .pipe plugins.imagemin
-      optimizationLevel: 5
-    .pipe gulp.dest "#{config.outputPath}/#{config.imagesDirectory}"
-
   # Compress Main JavaScript
-  gulp.src "#{config.outputPath}/#{config.jsDirectory}/#{config.jsMainFile}.js"
+  js = gulp.src "#{config.outputPath}/#{config.jsDirectory}/#{config.jsMainFile}.js"
     .pipe plugins.uglify()
     .pipe gulp.dest "#{config.outputPath}/#{config.jsDirectory}/"
 
   # Compress Vendor JavaScript
-  gulp.src "#{config.outputPath}/#{config.jsDirectory}/vendor.js"
+  vendor = gulp.src "#{config.outputPath}/#{config.jsDirectory}/vendor.js"
     .pipe plugins.uglify()
     .pipe gulp.dest "#{config.outputPath}/#{config.jsDirectory}/"
 
-  # Minify CSS and Combine MediaQueries
-  gulp.src "#{config.outputPath}/#{config.cssDirectory}/*.css"
-    .pipe plugins.combineMediaQueries()
+  # Minify CSS
+  css = gulp.src "#{config.outputPath}/#{config.cssDirectory}/*.css"
     .pipe plugins.minifyCss()
     .pipe gulp.dest "#{config.outputPath}/#{config.cssDirectory}"
+
+  return merge(js, vendor, css)

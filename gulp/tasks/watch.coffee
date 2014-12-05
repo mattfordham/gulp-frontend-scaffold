@@ -13,17 +13,17 @@ config    = require "../config.coffee"
 
 gulp.task "watch", ->
 
-  plugins.watch "#{config.sourcePath}/#{config.cssDirectory}/**/*.{styl,sass,scss,css}", (e, cb) ->
-    gulp.start "stylesheets", cb
+  plugins.watch "#{config.sourcePath}/#{config.cssDirectory}/**/*.{styl,sass,scss,css}", ->
+    gulp.start "stylesheets"
 
-  plugins.watch "#{config.sourcePath}/#{config.imagesDirectory}/**/*", (e, cb) ->
-    gulp.start "copy-images", cb
+  plugins.watch "#{config.sourcePath}/#{config.imagesDirectory}/**/*", ->
+    gulp.start "copy-images"
 
-  plugins.watch "#{config.sourcePath}/#{config.jsDirectory}/**/*.{coffee,js}", (e, cb) ->
-    gulp.start "javascripts", cb
+  plugins.watch "#{config.sourcePath}/#{config.jsDirectory}/**/*.{coffee,js}", ->
+    gulp.start "javascripts"
 
-  plugins.watch "bower.json", (e, cb) ->
-    gulp.start "bower", cb
+  plugins.watch "bower.json", ->
+    gulp.start "bower"
 
   server = plugins.livereload()
   plugins.livereload.listen()
@@ -31,8 +31,7 @@ gulp.task "watch", ->
   plugins.watch "#{config.publicPath}/**/*.{css,js,svg,jpg,gif,png}"
     .pipe plugins.livereload()
 
-  plugins.watch "#{config.publicPath}/**/*.html", (e, cb) ->
+  plugins.watch "#{config.publicPath}/**/*.html", ->
     server.changed()
-    cb()
 
   return
