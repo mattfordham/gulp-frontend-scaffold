@@ -25,13 +25,9 @@ gulp.task "watch", ->
   plugins.watch "bower.json", ->
     gulp.start "bower"
 
-  server = plugins.livereload()
   plugins.livereload.listen()
 
-  plugins.watch "#{config.publicPath}/**/*.{css,js,svg,jpg,gif,png}"
+  plugins.watch "#{config.publicPath}/**/*"
     .pipe plugins.livereload()
-
-  plugins.watch "#{config.publicPath}/**/*.html", ->
-    server.changed()
-
+  
   return
