@@ -1,2 +1,5 @@
+Greetings = require "./modules/sayHello"
+
 $ -> 
-  console.log "Hello world!!!"
+  console.log Greetings.sayHello()
+  console.log Greetings.sayGoodbye()

@@ -12,7 +12,7 @@ merge     = require 'merge-stream'
 # Minify 
 #--------------------------------------------------------
 
-gulp.task "minify", ->
+gulp.task "minify", (callback) ->
 
   # Compress Main JavaScript
   js = gulp.src "#{config.outputPath}/#{config.jsDirectory}/#{config.jsMainFile}.js"

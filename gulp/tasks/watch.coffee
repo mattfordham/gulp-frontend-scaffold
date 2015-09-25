@@ -12,22 +12,14 @@ config    = require "../config.coffee"
 #--------------------------------------------------------
 
 gulp.task "watch", ->
-
-  plugins.watch "#{config.sourcePath}/#{config.cssDirectory}/**/*.{styl,sass,scss,css}", ->
-    gulp.start "stylesheets"
-
-  plugins.watch "#{config.sourcePath}/#{config.imagesDirectory}/**/*", ->
-    gulp.start "copy-images"
-
-  plugins.watch "#{config.sourcePath}/#{config.jsDirectory}/**/*.{coffee,js}", ->
-    gulp.start "javascripts"
-
-  plugins.watch "bower.json", ->
-    gulp.start "bower"
+  gulp.watch "#{config.sourcePath}/#{config.cssDirectory}/**/*.{styl,sass,scss,css}", ["stylesheets"]
+  gulp.watch "#{config.sourcePath}/#{config.imagesDirectory}/**/*", ["copy-images"]
+  gulp.watch "#{config.sourcePath}/#{config.jsDirectory}/**/*.{coffee,js}", ["javascripts"]
+  gulp.watch "bower.json", ["bower"]
 
   plugins.livereload.listen()
 
-  plugins.watch "#{config.publicPath}/**/*"
-    .pipe plugins.livereload()
+  gulp.watch "#{config.publicPath}/**/*", (e) ->
+    plugins.livereload.changed(e.path)
   
   return
