@@ -22,15 +22,14 @@ gulp.task "dev", ->
   runSequence "set-development", [
     "copy-images"
     "bower"
-    "javascripts"
     "stylesheets"
+    "webpack"
   ], "server", "watch"
 
 gulp.task "build", ->
   runSequence [
     "copy-images"
     "bower"
-    "javascripts"
     "stylesheets"
+    "webpack"
   ], "minify"
-

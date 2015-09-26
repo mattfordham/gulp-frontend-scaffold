@@ -7,6 +7,9 @@ Config = ->
   # Development mode
   @development = false
 
+  # Production mode
+  @production = false
+
   # Source path
   @sourcePath = "source"
 

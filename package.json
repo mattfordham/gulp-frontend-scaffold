@@ -2,6 +2,7 @@
   "name": "wintr-gulp-template",
   "devDependencies": {
     "chai": "^1.9.1",
+    "coffee-loader": "^0.7.2",
     "coffee-script": "^1.7.1",
     "coffeeify": "^0.6.0",
     "event-stream": "^3.1.7",
@@ -34,6 +35,7 @@
     "gulp-sourcemaps": "^1.2.8",
     "gulp-stylus": "^1.0.2",
     "gulp-uglify": "^0.3.0",
+    "gulp-util": "^3.0.6",
     "gulp-webserver": "^0.8.2",
     "handleify": "^0.1.2",
     "jeet": "^5.2.10",
@@ -44,7 +46,8 @@
     "require-dir": "^0.1.0",
     "run-sequence": "~0.3.6",
     "rupture": "^0.1.0",
-    "stylus": "0.49.2"
+    "stylus": "0.49.2",
+    "webpack": "^1.12.2"
   },
   "dependencies": {}
 }

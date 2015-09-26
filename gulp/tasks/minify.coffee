@@ -14,15 +14,20 @@ merge     = require 'merge-stream'
 
 gulp.task "minify", (callback) ->
 
+  #--------
+  # REMOVED - Webpack does this
+    
   # Compress Main JavaScript
-  js = gulp.src "#{config.outputPath}/#{config.jsDirectory}/#{config.jsMainFile}.js"
-    .pipe plugins.uglify()
-    .pipe gulp.dest "#{config.outputPath}/#{config.jsDirectory}/"
+  # js = gulp.src "#{config.outputPath}/#{config.jsDirectory}/#{config.jsMainFile}.js"
+  #   .pipe plugins.uglify()
+  #   .pipe gulp.dest "#{config.outputPath}/#{config.jsDirectory}/"
 
   # Compress Vendor JavaScript
-  vendor = gulp.src "#{config.outputPath}/#{config.jsDirectory}/vendor.js"
-    .pipe plugins.uglify()
-    .pipe gulp.dest "#{config.outputPath}/#{config.jsDirectory}/"
+  # vendor = gulp.src "#{config.outputPath}/#{config.jsDirectory}/vendor.js"
+  #   .pipe plugins.uglify()
+  #   .pipe gulp.dest "#{config.outputPath}/#{config.jsDirectory}/"
+
+  #--------
 
   # Minify CSS
   css = gulp.src "#{config.outputPath}/#{config.cssDirectory}/*.css"
