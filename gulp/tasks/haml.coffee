@@ -12,7 +12,6 @@ config    = require "../config.coffee"
 #--------------------------------------------------------
 
 gulp.task "haml", (callback) ->
-  console.log "#{config.sourcePath}/#{config.hamlDirectory}/**/*.haml"
   gulp.src "#{config.sourcePath}/#{config.hamlDirectory}/**/*.haml"
     .pipe plugins.haml()
     .pipe gulp.dest "#{config.publicPath}"
