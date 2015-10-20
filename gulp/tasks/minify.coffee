@@ -9,14 +9,14 @@ merge     = require 'merge-stream'
 
 
 #--------------------------------------------------------
-# Minify 
+# Minify
 #--------------------------------------------------------
 
 gulp.task "minify", (callback) ->
 
   #--------
   # REMOVED - Webpack does this
-    
+
   # Compress Main JavaScript
   # js = gulp.src "#{config.outputPath}/#{config.jsDirectory}/#{config.jsMainFile}.js"
   #   .pipe plugins.uglify()
@@ -34,4 +34,4 @@ gulp.task "minify", (callback) ->
     .pipe plugins.minifyCss()
     .pipe gulp.dest "#{config.outputPath}/#{config.cssDirectory}"
 
-  return merge(js, vendor, css)
+  return css
