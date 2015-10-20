@@ -2,7 +2,7 @@
 # Config Variables
 #--------------------------------------------------------
 
-Config = -> 
+Config = ->
 
   # Development mode
   @development = false
@@ -30,6 +30,9 @@ Config = ->
 
   # Name of CSS directory
   @cssDirectory = "css"
+
+  # Name of HAML directory
+  @hamlDirectory = "haml"
 
   # Name of Images directory
   @imagesDirectory = "images"
