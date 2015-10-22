@@ -33,7 +33,7 @@
     "gulp-run": "^1.5.2",
     "gulp-sketch": "0.0.3",
     "gulp-sourcemaps": "^1.2.8",
-    "gulp-stylus": "^1.0.2",
+    "gulp-stylus": "^2.1.0",
     "gulp-uglify": "^0.3.0",
     "gulp-util": "^3.0.6",
     "gulp-webserver": "^0.8.2",
@@ -46,7 +46,6 @@
     "require-dir": "^0.1.0",
     "run-sequence": "~0.3.6",
     "rupture": "^0.1.0",
-    "stylus": "0.49.2",
     "webpack": "^1.12.2"
   },
   "dependencies": {}
