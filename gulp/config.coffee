@@ -31,8 +31,8 @@ Config = ->
   # Name of CSS directory
   @cssDirectory = "css"
 
-  # Name of HAML directory
-  @hamlDirectory = "haml"
+  # Name of template directory
+  @templateDirectory = "templates"
 
   # Name of Images directory
   @imagesDirectory = "images"

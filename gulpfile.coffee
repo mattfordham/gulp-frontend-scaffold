@@ -24,7 +24,7 @@ gulp.task "dev", ->
     "bower"
     "stylesheets"
     "webpack"
-    "haml"
+    "templates"
   ], "server", "watch"
 
 gulp.task "build", ->
@@ -33,5 +33,5 @@ gulp.task "build", ->
     "bower"
     "stylesheets"
     "webpack"
-    "haml"
+    "templates"
   ], "minify"

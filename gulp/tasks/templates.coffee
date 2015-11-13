@@ -8,11 +8,14 @@ config    = require "../config.coffee"
 
 
 #--------------------------------------------------------
-# Haml compilation
+# Template compilation
 #--------------------------------------------------------
 
-gulp.task "haml", (callback) ->
-  gulp.src "#{config.sourcePath}/#{config.hamlDirectory}/**/*.haml"
-    .pipe plugins.haml()
+gulp.task "templates", (callback) ->
+  gulp.src "#{config.sourcePath}/#{config.templateDirectory}/**/*.jade"
+    .pipe plugins.consolidate("jade")
+    .pipe(plugins.rename((path) ->
+      path.extname = ".html"
+    ))
     .pipe gulp.dest "#{config.publicPath}"
 
